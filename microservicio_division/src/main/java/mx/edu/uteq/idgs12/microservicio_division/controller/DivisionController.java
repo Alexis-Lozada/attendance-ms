@@ -16,6 +16,12 @@ public class DivisionController {
     public DivisionController(DivisionService divisionService) {
         this.divisionService = divisionService;
     }
+    
+    @PostMapping
+    public Division guardar(@RequestBody Division division) {
+        return divisionService.guardar(division);
+    }
+
 
     
 }

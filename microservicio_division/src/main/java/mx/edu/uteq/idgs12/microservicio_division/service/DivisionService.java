@@ -15,6 +15,9 @@ public class DivisionService {
     public DivisionService(DivisionRepository divisionRepository) {
         this.divisionRepository = divisionRepository;
     }
-
+    
+    public Division guardar(Division division) {
+        return divisionRepository.save(division);
+    }
     
 }
