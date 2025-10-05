@@ -32,6 +32,7 @@ public class UserService {
     /** Registro de usuario */
     public UserResponseDTO register(UserRegisterDTO dto) {
         User user = new User();
+        user.setIdUniversity(dto.getIdUniversity());
         user.setEmail(dto.getEmail());
         user.setEnrollmentNumber(dto.getEnrollmentNumber());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -108,6 +109,7 @@ public class UserService {
     private UserResponseDTO mapToResponse(User user) {
         UserResponseDTO dto = new UserResponseDTO();
         dto.setIdUser(user.getIdUser());
+        dto.setIdUniversity(user.getIdUniversity());
         dto.setEmail(user.getEmail());
         dto.setEnrollmentNumber(user.getEnrollmentNumber());
         dto.setFirstName(user.getFirstName());
