@@ -19,11 +19,10 @@ public class FileStorageController {
         this.fileService = fileService;
     }
 
-    @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
-public ResponseEntity<FileDTO> uploadFile(@RequestPart("file") MultipartFile file) throws IOException {
-    System.out.println("📦 Archivo recibido: " + file.getOriginalFilename());
-    return ResponseEntity.ok(fileService.uploadFile(file));
-}
+    @PostMapping("/upload")
+    public ResponseEntity<FileDTO> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(fileService.uploadFile(file));
+    }
 
     @GetMapping("/{uuid}")
     public ResponseEntity<FileStorage> getFile(@PathVariable String uuid) {
