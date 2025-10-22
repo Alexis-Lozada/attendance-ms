@@ -1,5 +1,6 @@
 package mx.edu.uteq.idgs12.chat_ms.controller;
 
+import mx.edu.uteq.idgs12.chat_ms.client.UserClient;
 import mx.edu.uteq.idgs12.chat_ms.dto.ConversationDTO;
 import mx.edu.uteq.idgs12.chat_ms.dto.MessageDTO;
 import mx.edu.uteq.idgs12.chat_ms.dto.ParticipantDTO;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -18,12 +20,14 @@ import java.util.stream.Collectors;
 public class ChatController {
 
     private final ChatService chatService;
+    private final UserClient userClient;
 
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, UserClient userClient) {
         this.chatService = chatService;
+        this.userClient = userClient;
     }
 
-    // === Conversations filtradas por usuario ===
+    // === Conversations ===
     @GetMapping("/{userId}")
     public List<ConversationDTO> listConversationsByUser(@PathVariable Long userId) {
         return chatService.getConversationsByUser(userId).stream().map(conv -> {
@@ -78,6 +82,20 @@ public class ChatController {
             dto.setContent(msg.getContent());
             dto.setRead(msg.isRead());
             dto.setSentAt(msg.getSentAt());
+
+            // Obtener información del usuario
+            try {
+                Map<String, Object> userData = userClient.getUserById(msg.getSenderId());
+                if (userData != null) {
+                    String firstName = (String) userData.get("firstName");
+                    String lastName = (String) userData.get("lastName");
+                    dto.setSenderName(firstName + " " + lastName);
+                    dto.setSenderAvatar((String) userData.get("profileImage"));
+                }
+            } catch (Exception e) {
+                System.err.println("Error obteniendo datos del usuario " + msg.getSenderId() + ": " + e.getMessage());
+            }
+
             return dto;
         }).collect(Collectors.toList());
     }
@@ -99,7 +117,6 @@ public class ChatController {
         dto.setSentAt(saved.getSentAt());
         return dto;
     }
-
 
     // === Participants ===
     @GetMapping("/participants/{userId}")

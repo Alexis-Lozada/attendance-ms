@@ -10,6 +10,7 @@ public class UserResponseDTO {
     private String enrollmentNumber;
     private String firstName;
     private String lastName;
+    private String profileImage;
     private String role;
     private Boolean status;
 }

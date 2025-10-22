@@ -105,6 +105,10 @@ public class UserService {
                 }).orElse(false);
     }
 
+    public Optional<UserResponseDTO> getUserById(Integer id) {
+        return userRepository.findById(id).map(this::mapToResponse);
+    }
+
     /** Convertir Entity -> DTO */
     private UserResponseDTO mapToResponse(User user) {
         UserResponseDTO dto = new UserResponseDTO();
@@ -114,6 +118,7 @@ public class UserService {
         dto.setEnrollmentNumber(user.getEnrollmentNumber());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
+        dto.setProfileImage(user.getProfileImage());
         dto.setRole(user.getRole());
         dto.setStatus(user.getStatus());
         return dto;

@@ -28,6 +28,9 @@ public class User {
     private String firstName;
     private String lastName;
 
+    @Column(columnDefinition = "TEXT")
+    private String profileImage;
+
     private String role; // ADMIN, STUDENT, TEACHER, etc.
     private Boolean status = true;
 

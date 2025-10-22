@@ -10,5 +10,6 @@ public class UserRegisterDTO {
     private String password;
     private String firstName;
     private String lastName;
+    private String profileImage;
     private String role;
 }

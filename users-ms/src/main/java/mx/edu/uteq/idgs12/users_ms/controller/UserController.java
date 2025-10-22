@@ -57,4 +57,11 @@ public class UserController {
             return ResponseEntity.status(403).body("Invalid refresh token");
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Integer id) {
+        return userService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
