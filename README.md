@@ -83,7 +83,7 @@ setx CHAT_SERVER_PORT "8085"
 ### JWT (compartido entre todos los microservicios)
 
 ```bash
-setx JWT_SECRET_KEY "yT7N4p9q3XrFv8zWb2GkR5hL0sPjQ1tYd9VwE6mHnB3uA5rKx8TzJ2cL4nF7vQ0p"
+setx JWT_SECRET_KEY "<clave_jwt_segura>"
 setx JWT_EXPIRATION_MS "3600000"
 ```
 
