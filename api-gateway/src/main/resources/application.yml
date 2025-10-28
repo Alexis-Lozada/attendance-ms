@@ -1,0 +1,83 @@
+server:
+  port: 8080 # Puerto del Gateway
+
+spring:
+  application:
+    name: api_gateway # Nombre del Gateway
+
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+
+            # ===========================
+            # Servicio de Usuarios
+            # ===========================
+            - id: users-service
+              uri: lb://users-ms # lb indica que se obtiene desde Eureka
+              predicates:
+                - Path=/api/users/**
+              filters:
+                - StripPrefix=0 # No elimina nada del path
+
+            # ===========================
+            # Servicio Académico
+            # ===========================
+            - id: academic-service
+              uri: lb://academic-ms
+              predicates:
+                - Path=/api/academic/**
+              filters:
+                - StripPrefix=0
+
+            # ===========================
+            # Servicio de Asistencia
+            # ===========================
+            - id: attendance-service
+              uri: lb://attendance-ms
+              predicates:
+                - Path=/api/attendance/**
+              filters:
+                - StripPrefix=0
+
+            # ===========================
+            # Servicio de Almacenamiento
+            # ===========================
+            - id: storage-service
+              uri: lb://storage-ms
+              predicates:
+                - Path=/api/storage/**
+              filters:
+                - StripPrefix=0
+
+            # ===========================
+            # Servicio de Chat
+            # ===========================
+            - id: chat-service
+              uri: lb://chat-ms
+              predicates:
+                - Path=/api/chat/**
+              filters:
+                - StripPrefix=0
+
+            # ===========================
+            # Servicio de Notificaciones
+            # ===========================
+            - id: notifications-service
+              uri: lb://notifications-ms
+              predicates:
+                - Path=/api/notifications/**
+              filters:
+                - StripPrefix=0
+
+      # Activar descubrimiento dinámico de servicios
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/ # URL del servidor Eureka
