@@ -1,20 +1,23 @@
 package mx.edu.uteq.idgs12.users_ms.service;
 
-import mx.edu.uteq.idgs12.users_ms.dto.UserLoginDTO;
-import mx.edu.uteq.idgs12.users_ms.dto.UserRegisterDTO;
-import mx.edu.uteq.idgs12.users_ms.dto.UserResponseDTO;
-import mx.edu.uteq.idgs12.users_ms.entity.User;
-import mx.edu.uteq.idgs12.users_ms.entity.RefreshToken;
-import mx.edu.uteq.idgs12.users_ms.repository.UserRepository;
-import mx.edu.uteq.idgs12.users_ms.security.JwtUtil;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import mx.edu.uteq.idgs12.users_ms.dto.UserCrudDTO;
+import mx.edu.uteq.idgs12.users_ms.dto.UserLoginDTO;
+import mx.edu.uteq.idgs12.users_ms.dto.UserRegisterDTO;
+import mx.edu.uteq.idgs12.users_ms.dto.UserResponseDTO;
+import mx.edu.uteq.idgs12.users_ms.entity.RefreshToken;
+import mx.edu.uteq.idgs12.users_ms.entity.User;
+import mx.edu.uteq.idgs12.users_ms.repository.UserRepository;
+import mx.edu.uteq.idgs12.users_ms.security.JwtUtil;
 
 @Service
 public class UserService {
@@ -117,6 +120,89 @@ public class UserService {
             .toList();
     }
 
+        // ============================ CRUD OPERATIONS ============================
+    
+    /** Obtener todos los usuarios */
+    public List<UserResponseDTO> findAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    /** Obtener usuario por ID */
+    public Optional<UserResponseDTO> findUserById(Integer id) {
+        return userRepository.findById(id)
+                .map(this::mapToResponse);
+    }
+
+    /** Crear usuario (CRUD) */
+    public UserResponseDTO createUser(UserCrudDTO dto) {
+        User user = new User();
+        user.setIdUniversity(dto.getIdUniversity());
+        user.setEmail(dto.getEmail());
+        user.setEnrollmentNumber(dto.getEnrollmentNumber());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setRole(dto.getRole());
+        user.setStatus(dto.getStatus() != null ? dto.getStatus() : true);
+        user.setCreatedAt(LocalDateTime.now());
+
+        User saved = userRepository.save(user);
+        return mapToResponse(saved);
+    }
+
+    /** Actualizar usuario completo */
+    public Optional<UserResponseDTO> updateUser(Integer id, UserCrudDTO dto) {
+        return userRepository.findById(id)
+                .map(existingUser -> {
+                    existingUser.setIdUniversity(dto.getIdUniversity());
+                    existingUser.setEmail(dto.getEmail());
+                    existingUser.setEnrollmentNumber(dto.getEnrollmentNumber());
+                    
+                    // Solo actualizar password si se proporciona uno nuevo
+                    if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+                        existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+                    }
+                    
+                    existingUser.setFirstName(dto.getFirstName());
+                    existingUser.setLastName(dto.getLastName());
+                    existingUser.setRole(dto.getRole());
+                    existingUser.setStatus(dto.getStatus());
+
+                    User updated = userRepository.save(existingUser);
+                    return mapToResponse(updated);
+                });
+    }
+
+    /** Actualizar solo el estado del usuario */
+    public Optional<UserResponseDTO> updateUserStatus(Integer id, Boolean status) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setStatus(status);
+                    User updated = userRepository.save(user);
+                    return mapToResponse(updated);
+                });
+    }
+
+    /** Eliminar usuario */
+    public boolean deleteUser(Integer id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    /** Buscar usuario por email */
+    public Optional<UserResponseDTO> findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(this::mapToResponse);
+    }
+
+    // ============================ COMMON METHODS ============================
+    
     /** Convertir Entity -> DTO */
     private UserResponseDTO mapToResponse(User user) {
         UserResponseDTO dto = new UserResponseDTO();
@@ -126,7 +212,6 @@ public class UserService {
         dto.setEnrollmentNumber(user.getEnrollmentNumber());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
-        dto.setProfileImage(user.getProfileImage());
         dto.setRole(user.getRole());
         dto.setStatus(user.getStatus());
         return dto;

@@ -1,15 +1,25 @@
 package mx.edu.uteq.idgs12.users_ms.controller;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import mx.edu.uteq.idgs12.users_ms.dto.UserCrudDTO;
 import mx.edu.uteq.idgs12.users_ms.dto.UserLoginDTO;
 import mx.edu.uteq.idgs12.users_ms.dto.UserRegisterDTO;
 import mx.edu.uteq.idgs12.users_ms.dto.UserResponseDTO;
 import mx.edu.uteq.idgs12.users_ms.service.UserService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -59,16 +69,85 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @GetMapping("/university/{idUniversity}")
     public ResponseEntity<List<UserResponseDTO>> getUsersByUniversity(@PathVariable Integer idUniversity) {
         List<UserResponseDTO> users = userService.getUsersByUniversity(idUniversity);
         return ResponseEntity.ok(users);
+    }
+
+     // ============================ CRUD OPERATIONS ============================
+    
+    /** Obtener todos los usuarios */
+    @GetMapping
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.findAllUsers());
+    }
+
+    /** Obtener usuario por ID */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Integer id) {
+        Optional<UserResponseDTO> user = userService.findUserById(id);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.status(404).body("User not found");
+        }
+    }
+
+    /** Buscar usuario por email */
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
+        Optional<UserResponseDTO> user = userService.findUserByEmail(email);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.status(404).body("User not found");
+        }
+    }
+
+    /** Crear usuario (CRUD) */
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody UserCrudDTO dto) {
+        try {
+            return ResponseEntity.ok(userService.createUser(dto));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /** Actualizar usuario completo */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody UserCrudDTO dto) {
+        Optional<UserResponseDTO> updatedUser = userService.updateUser(id, dto);
+        if (updatedUser.isPresent()) {
+            return ResponseEntity.ok(updatedUser.get());
+        } else {
+            return ResponseEntity.status(404).body("User not found");
+        }
+    }
+
+     /** Actualizar estado del usuario */
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateUserStatus(
+            @PathVariable Integer id, 
+            @RequestParam Boolean status) {
+        
+        Optional<UserResponseDTO> updatedUser = userService.updateUserStatus(id, status);
+        if (updatedUser.isPresent()) {
+            return ResponseEntity.ok(updatedUser.get());
+        } else {
+            return ResponseEntity.status(404).body("User not found");
+        }
+    }
+
+    /** Eliminar usuario */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+        boolean deleted = userService.deleteUser(id);
+        if (deleted) {
+            return ResponseEntity.ok("User deleted successfully");
+        } else {
+            return ResponseEntity.status(404).body("User not found");
+        }
     }
 }
