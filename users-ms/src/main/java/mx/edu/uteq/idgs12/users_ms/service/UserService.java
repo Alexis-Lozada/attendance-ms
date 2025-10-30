@@ -7,6 +7,8 @@ import mx.edu.uteq.idgs12.users_ms.entity.User;
 import mx.edu.uteq.idgs12.users_ms.entity.RefreshToken;
 import mx.edu.uteq.idgs12.users_ms.repository.UserRepository;
 import mx.edu.uteq.idgs12.users_ms.security.JwtUtil;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -110,6 +112,18 @@ public class UserService {
         return userRepository.findById(id).map(this::mapToResponse);
     }
 
+    public Optional<UserResponseDTO> updateUser(Integer id, UserRegisterDTO dto) {
+        return userRepository.findById(id).map(user -> {
+            if (dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
+            if (dto.getLastName() != null) user.setLastName(dto.getLastName());
+            if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+            if (dto.getEnrollmentNumber() != null) user.setEnrollmentNumber(dto.getEnrollmentNumber());
+            if (dto.getProfileImage() != null) user.setProfileImage(dto.getProfileImage());
+            User updated = userRepository.save(user);
+            return mapToResponse(updated);
+        });
+    }
+
     public List<UserResponseDTO> getUsersByUniversity(Integer idUniversity) {
     return userRepository.findByIdUniversity(idUniversity).stream()
             .filter(u -> !u.getStatus().equals(false))
@@ -120,15 +134,7 @@ public class UserService {
     /** Convertir Entity -> DTO */
     private UserResponseDTO mapToResponse(User user) {
         UserResponseDTO dto = new UserResponseDTO();
-        dto.setIdUser(user.getIdUser());
-        dto.setIdUniversity(user.getIdUniversity());
-        dto.setEmail(user.getEmail());
-        dto.setEnrollmentNumber(user.getEnrollmentNumber());
-        dto.setFirstName(user.getFirstName());
-        dto.setLastName(user.getLastName());
-        dto.setProfileImage(user.getProfileImage());
-        dto.setRole(user.getRole());
-        dto.setStatus(user.getStatus());
+        BeanUtils.copyProperties(user, dto);
         return dto;
     }
 }

@@ -1,6 +1,7 @@
 package mx.edu.uteq.idgs12.users_ms.dto;
 
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class UserResponseDTO {
@@ -13,4 +14,6 @@ public class UserResponseDTO {
     private String profileImage;
     private String role;
     private Boolean status;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastLogin; 
 }
