@@ -1,5 +1,6 @@
 package mx.edu.uteq.idgs12.users_ms.service;
 
+import mx.edu.uteq.idgs12.users_ms.dto.ChangePasswordDTO;
 import mx.edu.uteq.idgs12.users_ms.dto.UserLoginDTO;
 import mx.edu.uteq.idgs12.users_ms.dto.UserRegisterDTO;
 import mx.edu.uteq.idgs12.users_ms.dto.UserResponseDTO;
@@ -129,6 +130,19 @@ public class UserService {
             .filter(u -> !u.getStatus().equals(false))
             .map(this::mapToResponse)
             .toList();
+    }
+
+    public boolean changePassword(Integer userId, ChangePasswordDTO dto) {
+        return userRepository.findById(userId).map(user -> {
+            // Verificar la contraseña actual
+            if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+                return false;
+            }
+            // Guardar la nueva contraseña
+            user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+            userRepository.save(user);
+            return true;
+        }).orElse(false);
     }
 
     /** Convertir Entity -> DTO */

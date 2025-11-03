@@ -1,5 +1,6 @@
 package mx.edu.uteq.idgs12.users_ms.controller;
 
+import mx.edu.uteq.idgs12.users_ms.dto.ChangePasswordDTO;
 import mx.edu.uteq.idgs12.users_ms.dto.UserLoginDTO;
 import mx.edu.uteq.idgs12.users_ms.dto.UserRegisterDTO;
 import mx.edu.uteq.idgs12.users_ms.dto.UserResponseDTO;
@@ -77,5 +78,15 @@ public class UserController {
     public ResponseEntity<List<UserResponseDTO>> getUsersByUniversity(@PathVariable Integer idUniversity) {
         List<UserResponseDTO> users = userService.getUsersByUniversity(idUniversity);
         return ResponseEntity.ok(users);
+    }
+
+    @PutMapping("/{id}/change-password")
+    public ResponseEntity<?> changePassword(@PathVariable Integer id, @RequestBody ChangePasswordDTO dto) {
+        boolean changed = userService.changePassword(id, dto);
+        if (changed) {
+            return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
+        } else {
+            return ResponseEntity.status(400).body(Map.of("error", "Invalid current password or user not found"));
+        }
     }
 }
