@@ -29,7 +29,7 @@ public class FileStorageService {
         this.storage = StorageOptions.newBuilder()
                 .setProjectId("roster-474406")
                 .setCredentials(ServiceAccountCredentials.fromStream(
-                        new FileInputStream("D:/Projects/Roster/attendance-ms/storage-ms/src/keys/roster-474406-464b45aeb0cd.json")
+                        new FileInputStream("C:/Projects/attendance-ms/storage-ms/src/keys/roster-474406-464b45aeb0cd.json")
                 ))
                 .build()
                 .getService();
