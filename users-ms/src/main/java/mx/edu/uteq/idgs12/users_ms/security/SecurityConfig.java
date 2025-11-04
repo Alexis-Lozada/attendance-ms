@@ -32,6 +32,10 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                            "/api/groups",
+                            "/api/groups/**"
+                        ).hasRole("ADMIN")
+                        .requestMatchers(
                             "/api/users/login",
                             "/api/users/register",
                             "/api/users/refresh-token"
