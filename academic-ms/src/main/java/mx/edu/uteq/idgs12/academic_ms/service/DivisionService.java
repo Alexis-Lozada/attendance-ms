@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import mx.edu.uteq.idgs12.academic_ms.client.UserClient;
 import mx.edu.uteq.idgs12.academic_ms.dto.DivisionDTO;
-import mx.edu.uteq.idgs12.academic_ms.dto.UserDTO;
 import mx.edu.uteq.idgs12.academic_ms.entity.Division;
 import mx.edu.uteq.idgs12.academic_ms.entity.University;
 import mx.edu.uteq.idgs12.academic_ms.repository.DivisionRepository;
@@ -25,9 +23,6 @@ public class DivisionService {
 
     @Autowired
     private UniversityRepository universityRepository;
-
-    @Autowired
-    private UserClient userClient;
 
     public List<DivisionDTO> getAll() {
         return divisionRepository.findAll()
@@ -101,19 +96,6 @@ public class DivisionService {
         DivisionDTO dto = new DivisionDTO();
         BeanUtils.copyProperties(division, dto);
         dto.setIdUniversity(division.getUniversity().getIdUniversity());
-
-        // Obtener nombre del coordinador desde users-ms
-        try {
-            UserDTO coordinator = userClient.getUserById(division.getIdCoordinator());
-            if (coordinator != null) {
-                dto.setCoordinatorName(coordinator.getFirstName() + " " + coordinator.getLastName());
-            } else {
-                dto.setCoordinatorName("Desconocido");
-            }
-        } catch (Exception e) {
-            dto.setCoordinatorName("No disponible");
-        }
-
         return dto;
     }
 
