@@ -1,7 +1,8 @@
 package mx.edu.uteq.idgs12.users_ms.dto;
 
-import lombok.Data;
 import java.time.LocalDateTime;
+
+import lombok.Data;
 
 @Data
 public class UserResponseDTO {
@@ -15,5 +16,5 @@ public class UserResponseDTO {
     private String role;
     private Boolean status;
     private LocalDateTime createdAt;
-    private LocalDateTime lastLogin; 
+    private LocalDateTime lastLogin;
 }
