@@ -32,6 +32,12 @@ public class GroupCourseController {
         return groupCourseService.getByGroup(idGroup);
     }
 
+    @GetMapping("/course/{idCourse}/groups")
+    public ResponseEntity<List<Integer>> getGroupIdsByCourse(@PathVariable Integer idCourse) {
+        List<Integer> groupIds = groupCourseService.getGroupIdsByCourse(idCourse);
+        return ResponseEntity.ok(groupIds);
+    }
+
     @PostMapping
     public ResponseEntity<?> create(@RequestBody GroupCourseDTO dto) {
         try {

@@ -17,7 +17,7 @@ public class Course {
     private University university;
 
     @ManyToOne
-    @JoinColumn(name = "idDivision", nullable = false)
+    @JoinColumn(name = "idDivision", nullable = true)
     private Division division;
 
     @Column(length = 20, nullable = false)

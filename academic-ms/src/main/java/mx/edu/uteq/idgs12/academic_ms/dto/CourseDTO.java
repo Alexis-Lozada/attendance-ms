@@ -1,5 +1,6 @@
 package mx.edu.uteq.idgs12.academic_ms.dto;
 
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -14,4 +15,7 @@ public class CourseDTO {
     private String semester; // puede ser null = curso general
     private Boolean status;
     private Long modulesCount;
+
+    private Long groupsCount; // número de grupos relacionados (desde attendance-ms)
+    private List<Integer> groupIds;
 }
