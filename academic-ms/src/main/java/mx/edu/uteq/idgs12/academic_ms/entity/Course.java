@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "course")
+@Table(name = "courses")
 @Data
 public class Course {
 
@@ -17,7 +17,7 @@ public class Course {
     private University university;
 
     @ManyToOne
-    @JoinColumn(name = "idDivision", nullable = false)
+    @JoinColumn(name = "idDivision", nullable = true) // Si es null, significa que es un curso general
     private Division division;
 
     @Column(length = 20, nullable = false)
@@ -26,8 +26,7 @@ public class Course {
     @Column(length = 150, nullable = false)
     private String courseName;
 
-    /** Si es null, significa que es un curso general (aplicable a todos los semestres) */
-    @Column(length = 10, nullable = true)
+    @Column(length = 10, nullable = true) // Si es null, significa que es un curso general
     private String semester;
 
     @Column(nullable = false)
