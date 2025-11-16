@@ -16,6 +16,9 @@ public class User {
     @Column(nullable = true)
     private Integer idUniversity;
 
+    @Column(nullable = true)
+    private Integer idDivision;
+
     @Column(unique = true, nullable = false)
     private String email;
 
