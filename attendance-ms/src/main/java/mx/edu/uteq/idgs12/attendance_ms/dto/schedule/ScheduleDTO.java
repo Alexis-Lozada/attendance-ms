@@ -1,4 +1,4 @@
-package mx.edu.uteq.idgs12.attendance_ms.dto;
+package mx.edu.uteq.idgs12.attendance_ms.dto.schedule;
 
 import lombok.Data;
 

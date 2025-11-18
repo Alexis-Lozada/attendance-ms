@@ -1,6 +1,6 @@
 package mx.edu.uteq.idgs12.attendance_ms.service;
 
-import mx.edu.uteq.idgs12.attendance_ms.dto.*;
+import mx.edu.uteq.idgs12.attendance_ms.dto.schedule.*;
 import mx.edu.uteq.idgs12.attendance_ms.entity.GroupCourse;
 import mx.edu.uteq.idgs12.attendance_ms.entity.Schedule;
 import mx.edu.uteq.idgs12.attendance_ms.repository.GroupCourseRepository;

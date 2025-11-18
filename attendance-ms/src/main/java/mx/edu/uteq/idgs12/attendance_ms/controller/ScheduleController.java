@@ -1,7 +1,7 @@
 package mx.edu.uteq.idgs12.attendance_ms.controller;
 
-import mx.edu.uteq.idgs12.attendance_ms.dto.GroupCourseWithSchedulesDTO;
-import mx.edu.uteq.idgs12.attendance_ms.dto.ScheduleGroupRequest;
+import mx.edu.uteq.idgs12.attendance_ms.dto.schedule.GroupCourseWithSchedulesDTO;
+import mx.edu.uteq.idgs12.attendance_ms.dto.schedule.ScheduleGroupRequest;
 import mx.edu.uteq.idgs12.attendance_ms.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
