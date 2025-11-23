@@ -10,4 +10,10 @@ public class AttendanceDTO {
     private String attendanceDate;
     private String status;
     private String comments;
+
+    // Datos del estudiante
+    private String studentName;
+    private String enrollmentNumber;
+    private String profileImage;
 }
+

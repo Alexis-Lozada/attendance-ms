@@ -31,6 +31,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // 👇 PERMITIR WebSocket + STOMP sin JWT
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/topic/**", "/app/**").permitAll()
+
+                        // 👇 El resto de la API sigue protegida con JWT
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

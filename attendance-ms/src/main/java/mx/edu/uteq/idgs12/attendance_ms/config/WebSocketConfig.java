@@ -13,7 +13,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // endpoint del socket
-                .setAllowedOrigins("*") // permitir frontend
+                .setAllowedOrigins(
+                        "http://localhost:3000",
+                        "https://attendance-app-gold-six.vercel.app"
+                )
                 .withSockJS(); // fallback
     }
 
