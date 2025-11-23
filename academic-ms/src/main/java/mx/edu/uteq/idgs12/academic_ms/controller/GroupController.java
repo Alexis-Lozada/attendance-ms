@@ -34,14 +34,14 @@ public class GroupController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /** Obtener grupos por programa (opcionalmente solo activos) */
     @GetMapping("/program/{idProgram}")
-    public List<GroupDTO> getByProgram(@PathVariable Integer idProgram) {
-        return groupService.getByProgram(idProgram);
-    }
-
-    @GetMapping("/program/{idProgram}/active")
-    public List<GroupDTO> getActiveByProgram(@PathVariable Integer idProgram) {
-        return groupService.getActiveByProgram(idProgram);
+    public ResponseEntity<List<GroupDTO>> getByProgram(
+            @PathVariable Integer idProgram,
+            @RequestParam(required = false) Boolean active) {
+            
+        List<GroupDTO> groups = groupService.getByProgram(idProgram, active);
+        return ResponseEntity.ok(groups);
     }
 
     @GetMapping("/university/{idUniversity}")
@@ -62,6 +62,26 @@ public class GroupController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    /** Obtener grupos por división (opcionalmente solo activos) */
+    @GetMapping("/division/{idDivision}")
+    public ResponseEntity<List<GroupDTO>> getByDivision(
+            @PathVariable Integer idDivision,
+            @RequestParam(required = false) Boolean active) {
+
+        List<GroupDTO> groups = groupService.getByDivision(idDivision, active);
+        return ResponseEntity.ok(groups);
+    }
+
+    /** Obtener grupos por tutor */
+    @GetMapping("/tutor/{idTutor}")
+    public ResponseEntity<List<GroupDTO>> getByTutor(@PathVariable Integer idTutor) {
+        List<GroupDTO> groups = groupService.getByTutor(idTutor);
+        if (groups.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(groups);
     }
 
     @PutMapping("/{id}")

@@ -6,6 +6,7 @@ import lombok.Data;
 public class DivisionDTO {
     private Integer idDivision;
     private Integer idUniversity;
+    private Integer idCoordinator;
     private String code;
     private String name;
     private String description;

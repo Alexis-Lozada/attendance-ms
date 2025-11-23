@@ -17,7 +17,7 @@ spring:
             - id: users-service
               uri: lb://users-ms # lb indica que se obtiene desde Eureka
               predicates:
-                - Path=/api/users/**
+                - Path=/api/user/**, /api/auth/**
               filters:
                 - StripPrefix=0 # No elimina nada del path
 
@@ -71,11 +71,15 @@ spring:
               filters:
                 - StripPrefix=0
 
-      # Activar descubrimiento dinámico de servicios
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
+            # ===========================
+            # Servicio de Autenticación
+            # ===========================
+            - id: auth-service
+              uri: lb://auth-server
+              predicates:
+                - Path=/api/auth/**, /oauth2/**
+              filters:
+                - StripPrefix=0
 
 eureka:
   client:

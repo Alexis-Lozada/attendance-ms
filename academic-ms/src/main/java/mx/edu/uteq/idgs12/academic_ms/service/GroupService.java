@@ -45,15 +45,10 @@ public class GroupService {
                 .map(this::toDTO);
     }
 
-    public List<GroupDTO> getByProgram(Integer idProgram) {
-        return groupRepository.findByProgram_IdProgram(idProgram)
-                .stream().map(this::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<GroupDTO> getActiveByProgram(Integer idProgram) {
-        return groupRepository.findByProgram_IdProgramAndStatusTrue(idProgram)
-                .stream().map(this::toDTO)
+    public List<GroupDTO> getByProgram(Integer idProgram, Boolean active) {
+        return groupRepository.findByProgram_IdProgram(idProgram).stream()
+                .filter(g -> active == null || !active || Boolean.TRUE.equals(g.getStatus()))
+                .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -66,6 +61,20 @@ public class GroupService {
     public List<GroupDTO> getActiveByUniversity(Integer idUniversity) {
         return groupRepository.findByProgram_Division_University_IdUniversityAndStatusTrue(idUniversity)
                 .stream().map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<GroupDTO> getByDivision(Integer idDivision, Boolean active) {
+        return groupRepository.findByProgram_Division_IdDivision(idDivision).stream()
+                .filter(g -> active == null || !active || Boolean.TRUE.equals(g.getStatus()))
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<GroupDTO> getByTutor(Integer idTutor) {
+        return groupRepository.findByIdTutor(idTutor)
+                .stream()
+                .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 

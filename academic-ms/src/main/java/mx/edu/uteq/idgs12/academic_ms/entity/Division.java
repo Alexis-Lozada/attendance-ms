@@ -23,6 +23,9 @@ public class Division {
     @JoinColumn(name = "idUniversity", nullable = false)
     private University university;
 
+    @Column(nullable = true)
+    private Integer idCoordinator;
+
     @Column(length = 20, nullable = false)
     private String code;
 

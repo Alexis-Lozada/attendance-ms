@@ -16,17 +16,6 @@ public class EnrollmentController {
     @Autowired
     private EnrollmentService enrollmentService;
 
-    @GetMapping
-    public List<EnrollmentDTO> getAll() {
-        return enrollmentService.getAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<EnrollmentDTO> getById(@PathVariable Integer id) {
-        EnrollmentDTO dto = enrollmentService.getById(id);
-        return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
-    }
-
     @GetMapping("/student/{idStudent}")
     public List<EnrollmentDTO> getByStudent(@PathVariable Integer idStudent) {
         return enrollmentService.getByStudent(idStudent);
@@ -37,6 +26,12 @@ public class EnrollmentController {
         return enrollmentService.getByGroup(idGroup);
     }
 
+    @GetMapping("/group/{idGroup}/count")
+    public ResponseEntity<Long> getEnrollmentCountByGroup(@PathVariable Integer idGroup) {
+        long count = enrollmentService.countByGroup(idGroup);
+        return ResponseEntity.ok(count);
+    }
+
     @PostMapping
     public ResponseEntity<EnrollmentDTO> create(@RequestBody EnrollmentDTO dto) {
         return ResponseEntity.ok(enrollmentService.save(dto));
@@ -45,17 +40,5 @@ public class EnrollmentController {
     @PutMapping("/{id}/status")
     public ResponseEntity<EnrollmentDTO> updateStatus(@PathVariable Integer id, @RequestParam Boolean status) {
         return ResponseEntity.ok(enrollmentService.updateStatus(id, status));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        enrollmentService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/group/{idGroup}/count")
-    public ResponseEntity<Long> getEnrollmentCountByGroup(@PathVariable Integer idGroup) {
-        long count = enrollmentService.countByGroup(idGroup);
-        return ResponseEntity.ok(count);
     }
 }

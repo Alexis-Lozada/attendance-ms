@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +18,11 @@ import mx.edu.uteq.idgs12.academic_ms.repository.UniversityRepository;
 @Service
 public class DivisionService {
 
-    private final DivisionRepository divisionRepository;
-    private final UniversityRepository universityRepository;
+    @Autowired
+    private DivisionRepository divisionRepository;
 
-    public DivisionService(DivisionRepository divisionRepository, UniversityRepository universityRepository) {
-        this.divisionRepository = divisionRepository;
-        this.universityRepository = universityRepository;
-    }
+    @Autowired
+    private UniversityRepository universityRepository;
 
     public List<DivisionDTO> getAll() {
         return divisionRepository.findAll()
@@ -92,15 +92,10 @@ public class DivisionService {
         divisionRepository.delete(division);
     }
 
-
     private DivisionDTO toDTO(Division division) {
         DivisionDTO dto = new DivisionDTO();
-        dto.setIdDivision(division.getIdDivision());
+        BeanUtils.copyProperties(division, dto);
         dto.setIdUniversity(division.getUniversity().getIdUniversity());
-        dto.setCode(division.getCode());
-        dto.setName(division.getName());
-        dto.setDescription(division.getDescription());
-        dto.setStatus(division.getStatus());
         return dto;
     }
 
@@ -109,13 +104,9 @@ public class DivisionService {
                 .orElseThrow(() -> new RuntimeException("University not found with ID: " + dto.getIdUniversity()));
 
         Division division = new Division();
-        division.setIdDivision(dto.getIdDivision());
+        BeanUtils.copyProperties(dto, division);
         division.setUniversity(university);
-        division.setCode(dto.getCode());
-        division.setName(dto.getName());
-        division.setDescription(dto.getDescription());
         division.setStatus(dto.getStatus() != null ? dto.getStatus() : true);
-
         return division;
     }
 }
