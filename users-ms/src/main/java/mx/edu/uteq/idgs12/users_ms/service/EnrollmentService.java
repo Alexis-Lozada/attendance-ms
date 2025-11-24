@@ -96,6 +96,7 @@ public class EnrollmentService {
 
         dto.setIdStudent(enrollment.getStudent().getIdUser());
         dto.setStudentName(enrollment.getStudent().getFirstName() + " " + enrollment.getStudent().getLastName());
+        dto.setStudentEmail(enrollment.getStudent().getEmail());
 
         try {
             Map<String, Object> groupData = academicClient.getGroupById(enrollment.getIdGroup());

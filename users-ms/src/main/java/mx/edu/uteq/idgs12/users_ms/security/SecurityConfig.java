@@ -36,7 +36,7 @@ public class SecurityConfig {
                             "/api/auth/register",
                             "/api/user/university/{idUniversity}",
                             "/api/user/{id}",
-                            "/api/enrollments/group/{idGroup}/count"
+                            "/api/enrollments/group/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.7</version>
+		<version>3.5.8</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>mx.edu.uteq.idgs12</groupId>
-	<artifactId>attendance-ms</artifactId>
+	<artifactId>notifications-ms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>attendance-ms</name>
+	<name>notifications-ms</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -33,6 +33,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -62,56 +66,14 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-openfeign</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt-api</artifactId>
-		    <version>0.11.5</version>
-		</dependency>
-		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt-impl</artifactId>
-		    <version>0.11.5</version>
-		    <scope>runtime</scope>
-		</dependency>
-		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt-jackson</artifactId>
-		    <version>0.11.5</version>
-		    <scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-websocket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
 	</dependencies>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>2025.0.0</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>2025.0.0</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<build>
 		<plugins>
@@ -142,4 +104,16 @@
 		</plugins>
 	</build>
 
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>2025.0.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

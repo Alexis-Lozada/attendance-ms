@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "attendance-ms", url = "${ATTENDANCE_MS_URL}")
+@FeignClient(name = "attendance-ms")
 public interface AttendanceClient {
 
     /* Devuelve el número de grupos relacionados a un curso */
