@@ -109,6 +109,15 @@ public class AttendanceService {
             }
         }
 
+        // Validar duplicado del mismo día
+        boolean alreadyExists = !attendanceRepository
+                .findTodayAttendance(session.getIdSchedule(), dto.getIdStudent())
+                .isEmpty();
+
+        if (alreadyExists) {
+            throw new RuntimeException("Ya has marcado asistencia para este curso el día de hoy.");
+        }
+
         // Crear y guardar asistencia
         Attendance attendance = new Attendance();
         attendance.setIdSchedule(session.getIdSchedule());
