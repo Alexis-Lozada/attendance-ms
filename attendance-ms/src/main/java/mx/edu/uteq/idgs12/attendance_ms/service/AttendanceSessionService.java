@@ -109,16 +109,6 @@ public class AttendanceSessionService {
         return session;
     }
 
-    /** Obtiene todas las sesiones de pase de lista */
-    public List<AttendanceSession> getAllSessions() {
-        return sessionRepository.findAll();
-    }
-
-    /** Obtiene una sesión de pase de lista por su ID */
-    public Optional<AttendanceSession> getById(Integer idSession) {
-        return sessionRepository.findById(idSession);
-    }
-
     /** Cierra automáticamente sesiones expiradas (cada 1 minuto) */
     @Scheduled(fixedRate = 60_000)
     @Transactional
