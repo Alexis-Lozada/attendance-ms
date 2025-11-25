@@ -3,19 +3,20 @@ package mx.edu.uteq.idgs12.attendance_ms.service;
 import mx.edu.uteq.idgs12.attendance_ms.client.AcademicFeignClient;
 import mx.edu.uteq.idgs12.attendance_ms.client.EnrollmentFeignClient;
 import mx.edu.uteq.idgs12.attendance_ms.client.NotificationsFeignClient;
+import mx.edu.uteq.idgs12.attendance_ms.dto.AttendanceSessionDTO;
 import mx.edu.uteq.idgs12.attendance_ms.dto.EnrollmentDTO;
 import mx.edu.uteq.idgs12.attendance_ms.dto.NotificationDTO;
-import mx.edu.uteq.idgs12.attendance_ms.dto.AttendanceSessionDTO;
 import mx.edu.uteq.idgs12.attendance_ms.entity.AttendanceSession;
 import mx.edu.uteq.idgs12.attendance_ms.entity.GroupCourse;
 import mx.edu.uteq.idgs12.attendance_ms.repository.AttendanceSessionRepository;
 import mx.edu.uteq.idgs12.attendance_ms.repository.GroupCourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration; // ✅ CAMBIO
-import java.time.Instant;  // ✅ CAMBIO
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -36,7 +37,7 @@ public class AttendanceSessionService {
     @Autowired
     private AcademicFeignClient academicFeignClient;
 
-    /** 🔹 Inicia un pase de lista con un horario específico seleccionado por el profesor*/
+    /** Inicia un pase de lista con un horario seleccionado */
     @Transactional
     public AttendanceSession startSession(AttendanceSessionDTO dto) {
         // Crear entidad
@@ -52,9 +53,10 @@ public class AttendanceSessionService {
 
         sessionRepository.save(session);
 
-        // Validar la relación grupo-curso
+        // Validar relación grupo-curso
         GroupCourse relation = groupCourseRepository.findById(dto.getIdGroupCourse())
-                .orElseThrow(() -> new RuntimeException("GroupCourse no encontrado con ID: " + dto.getIdGroupCourse()));
+                .orElseThrow(() ->
+                        new RuntimeException("GroupCourse no encontrado con ID: " + dto.getIdGroupCourse()));
 
         Integer idGroup = relation.getIdGroup();
         Integer idCourse = relation.getIdCourse();
@@ -76,26 +78,25 @@ public class AttendanceSessionService {
             throw new RuntimeException("No hay estudiantes inscritos en el grupo asociado.");
         }
 
-        // Enviar correo con plantilla a cada alumno
+        // Enviar correo a cada alumno
         for (EnrollmentDTO enrollment : enrollments) {
             String email = enrollment.getStudentEmail();
             String fullName = enrollment.getStudentName();
 
             if (email == null || fullName == null) continue;
 
-            // Crear DTO para notifications-ms
             NotificationDTO notification = new NotificationDTO();
             notification.setRecipientEmail(email);
-            notification.setSubject("📋 Registro de asistencia – " + courseName);
+            notification.setSubject("Registro de asistencia – " + courseName);
             notification.setTemplateName("attendance_email_template.html");
 
-            // Variables reemplazadas en Thymeleaf
             Map<String, Object> vars = new HashMap<>();
             vars.put("studentName", fullName);
             vars.put("courseName", courseName);
             vars.put("attendanceLink",
                     "https://tuapp.com/attendance/mark?groupCourse=" + dto.getIdGroupCourse() +
-                    "&schedule=" + dto.getIdSchedule());
+                            "&schedule=" + dto.getIdSchedule());
+
             notification.setTemplateVariables(vars);
 
             try {
@@ -108,15 +109,32 @@ public class AttendanceSessionService {
         return session;
     }
 
-    /** 🔹 Obtiene todas las sesiones de pase de lista */
+    /** Obtiene todas las sesiones de pase de lista */
     public List<AttendanceSession> getAllSessions() {
         return sessionRepository.findAll();
     }
 
-    /**
-     * 🔹 Obtiene sesión por ID.
-     */
+    /** Obtiene una sesión de pase de lista por su ID */
     public Optional<AttendanceSession> getById(Integer idSession) {
         return sessionRepository.findById(idSession);
+    }
+
+    /** Cierra automáticamente sesiones expiradas (cada 1 minuto) */
+    @Scheduled(fixedRate = 60_000)
+    @Transactional
+    public void closeExpiredSessions() {
+        Instant now = Instant.now();
+        List<AttendanceSession> openSessions = sessionRepository.findByStatus("OPEN");
+
+        for (AttendanceSession session : openSessions) {
+
+            if (session.getExpiresAt() != null && session.getExpiresAt().isBefore(now)) {
+
+                session.setStatus("CLOSED");
+                sessionRepository.save(session);
+
+                System.out.println("Sesión cerrada automáticamente: ID = " + session.getIdSession());
+            }
+        }
     }
 }
