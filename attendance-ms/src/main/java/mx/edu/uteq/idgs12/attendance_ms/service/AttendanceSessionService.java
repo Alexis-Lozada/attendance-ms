@@ -41,6 +41,39 @@ public class AttendanceSessionService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+
+    /** Verifica si se puede iniciar una nueva sesión de asistencia */
+    public boolean canStartSession(Integer idGroupCourse, Integer idSchedule) {
+        List<AttendanceSession> sessions =
+                sessionRepository.findByIdGroupCourseAndIdScheduleOrderByStartTimeDesc(
+                        idGroupCourse, idSchedule
+                );
+
+        // No hay sesiones previas → Sí puede iniciar
+        if (sessions.isEmpty()) return true;
+
+        AttendanceSession last = sessions.get(0);
+
+        // Validar si la sesión es del día actual
+        Instant now = Instant.now();
+        Instant startOfDay = now.atZone(java.time.ZoneId.systemDefault())
+                .toLocalDate()
+                .atStartOfDay(java.time.ZoneId.systemDefault())
+                .toInstant();
+        Instant endOfDay = startOfDay.plus(Duration.ofHours(24));
+
+        boolean isToday = last.getStartTime().isAfter(startOfDay) && last.getStartTime().isBefore(endOfDay);
+
+        // Sesión aún activa → NO
+        if ("OPEN".equals(last.getStatus())) return false;
+
+        // Sesión CLOSED pero del mismo día → NO
+        if ("CLOSED".equals(last.getStatus()) && isToday) return false;
+
+        // Sesión anterior es de otro día → SÍ
+        return true;
+    }
+
     /** Inicia un pase de lista con un horario seleccionado */
     @Transactional
     public AttendanceSession startSession(AttendanceSessionDTO dto) {
@@ -127,7 +160,7 @@ public class AttendanceSessionService {
                 session.setStatus("CLOSED");
                 sessionRepository.save(session);
 
-                // Notificar a WebSocketque que la sesión se cerró
+                // Notificar a WebSocket que que la sesión se cerró
                 messagingTemplate.convertAndSend(
                         "/topic/sessions/group-course/" + session.getIdGroupCourse(),
                         session

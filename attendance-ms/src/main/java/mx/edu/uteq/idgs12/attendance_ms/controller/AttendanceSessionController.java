@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/sessions")
 public class AttendanceSessionController {
@@ -17,6 +20,17 @@ public class AttendanceSessionController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
+    /** Validar si el profesor puede iniciar sesión*/
+    @GetMapping("/can-start")
+    public ResponseEntity<Map<String, Boolean>> canStart(
+            @RequestParam Integer groupCourse,
+            @RequestParam Integer schedule) {
+
+        boolean canStart = sessionService.canStartSession(groupCourse, schedule);
+
+        return ResponseEntity.ok(Collections.singletonMap("canStart", canStart));
+    }
 
     /** Iniciar una nueva sesión de pase de lista (envía correos) */
     @PostMapping("/start")

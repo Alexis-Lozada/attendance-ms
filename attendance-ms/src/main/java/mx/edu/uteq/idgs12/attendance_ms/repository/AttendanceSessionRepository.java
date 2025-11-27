@@ -18,4 +18,10 @@ public interface AttendanceSessionRepository extends JpaRepository<AttendanceSes
 
     /** Necesario para el scheduler que cierra sesiones */
     List<AttendanceSession> findByStatus(String status);
+
+    /** Historial de sesiones por grupo-curso y horario */
+    List<AttendanceSession> findByIdGroupCourseAndIdScheduleOrderByStartTimeDesc(
+            Integer idGroupCourse,
+            Integer idSchedule
+    );
 }
