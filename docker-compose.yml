@@ -199,6 +199,49 @@ services:
       retries: 3
       start_period: 40s
 
+  # ============================
+  #       STORAGE-MS
+  # ============================
+  storage-ms:
+    build:
+      context: ./storage-ms
+      dockerfile: Dockerfile
+    container_name: storage-ms
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - STORAGE_SERVER_PORT=8084
+      
+      # === DATABASE ===
+      - ACADEMIC_DB_URL=jdbc:postgresql://ep-polished-surf-ads7flz9-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require
+      - ACADEMIC_DB_USER=neondb_owner
+      - ACADEMIC_DB_PASSWORD=npg_TRZlYic9d0SA
+      
+      # === GOOGLE CLOUD ===
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/google-key.json
+      
+      # === EUREKA ===
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - EUREKA_INSTANCE_HOSTNAME=storage-ms
+
+    volumes:
+      - "C:/GCP_KEYS/roster-474406-464b45aeb0cd.json:/secrets/google-key.json:ro"
+
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+    networks:
+      - roster-net
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # ============================
   #        API GATEWAY
