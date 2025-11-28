@@ -1,0 +1,121 @@
+version: "3.9"
+
+services:
+
+  # ============================
+  #       EUREKA SERVER
+  # ============================
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - roster-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://eureka-server:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+  # ============================
+  #          USERS-MS
+  # ============================
+  users-ms:
+    build:
+      context: ./users-ms
+      dockerfile: Dockerfile
+    container_name: users-ms
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - USERS_SERVER_PORT=8081
+
+      # === DATABASE ===
+      - USERS_DB_URL=jdbc:postgresql://ep-fragrant-brook-a4now1ye-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require
+      - USERS_DB_USER=neondb_owner
+      - USERS_DB_PASSWORD=npg_dNiD1SO3Gvqt
+
+      # === JWT ===
+      - JWT_SECRET_KEY=yT7N4p9q3XrFv8zWb2GkR5hL0sPjQ1tYd9VwE6mHnB3uA5rKx8TzJ2cL4nF7vQ0p
+      - JWT_EXPIRATION_MS=3600000
+
+      # === EUREKA CONFIG ===
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - EUREKA_INSTANCE_HOSTNAME=users-ms
+
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+    networks:
+      - roster-net
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://users-ms:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+  # ============================
+  #         ACADEMIC-MS
+  # ============================
+  academic-ms:
+    build:
+      context: ./academic-ms
+      dockerfile: Dockerfile
+    container_name: academic-ms
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - ACADEMIC_SERVER_PORT=8082
+      
+      # === DATABASE ===
+      - ACADEMIC_DB_URL=jdbc:postgresql://ep-polished-surf-ads7flz9-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require
+      - ACADEMIC_DB_USER=neondb_owner
+      - ACADEMIC_DB_PASSWORD=npg_TRZlYic9d0SA
+
+      # === JWT ===
+      - JWT_SECRET_KEY=yT7N4p9q3XrFv8zWb2GkR5hL0sPjQ1tYd9VwE6mHnB3uA5rKx8TzJ2cL4nF7vQ0p
+      - JWT_EXPIRATION_MS=3600000
+
+      # === EUREKA CONFIG ===
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - EUREKA_INSTANCE_HOSTNAME=academic-ms
+
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+    networks:
+      - roster-net
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://academic-ms:8082/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+# ============================
+#         NETWORK
+# ============================
+networks:
+  roster-net:
+    driver: bridge
+
+volumes:
+  eureka-data:

@@ -31,13 +31,19 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // permitir actuator health sin login
+                        .requestMatchers("/actuator/health").permitAll()
+                    
+                        // endpoints públicos existentes
                         .requestMatchers(
-                            "/api/auth/**",
-                            "/api/auth/register",
-                            "/api/user/university/{idUniversity}",
-                            "/api/user/{id}",
-                            "/api/enrollments/group/**"
+                                "/api/auth/**",
+                                "/api/auth/register",
+                                "/api/user/university/{idUniversity}",
+                                "/api/user/{id}",
+                                "/api/enrollments/group/**"
                         ).permitAll()
+                    
+                        // todo lo demás requiere JWT
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

@@ -11,8 +11,8 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /app/target/users-ms-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/eureka-server-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE 8081
+EXPOSE 8761
 
 ENTRYPOINT ["java","-jar","/app/app.jar"]

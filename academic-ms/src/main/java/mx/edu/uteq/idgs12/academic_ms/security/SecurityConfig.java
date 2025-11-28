@@ -31,7 +31,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/groups/**","/api/courses/**").permitAll()
+                        // permitir actuator health sin login
+                        .requestMatchers("/actuator/health").permitAll()
+
+                        // endpoints públicos existentes
+                        .requestMatchers(
+                                "/api/groups/**",
+                                "/api/courses/**"
+                        ).permitAll()
+
+                        // todo lo demás requiere JWT
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
