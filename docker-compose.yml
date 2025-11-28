@@ -110,12 +110,38 @@ services:
       start_period: 40s
 
 
+  # ============================
+  #        API GATEWAY
+  # ============================
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - SPRING_APPLICATION_NAME=api-gateway
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - roster-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://api-gateway:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
 # ============================
 #         NETWORK
 # ============================
 networks:
   roster-net:
     driver: bridge
-
-volumes:
-  eureka-data:
