@@ -154,6 +154,53 @@ services:
 
 
   # ============================
+  #      NOTIFICATIONS-MS
+  # ============================
+  notifications-ms:
+    build:
+      context: ./notifications-ms
+      dockerfile: Dockerfile
+    container_name: notifications-ms
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SERVER_PORT=8086
+      
+      # === DATABASE ===
+      - ATTENDANCE_DB_URL=jdbc:postgresql://ep-shiny-hill-ad4r0284-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require
+      - ATTENDANCE_DB_USER=neondb_owner
+      - ATTENDANCE_DB_PASSWORD=npg_R78KEtaQAHJg
+      
+      # === MAIL CONFIG ===
+      - SPRING_MAIL_USERNAME=alexislozadasalinas11@gmail.com
+      - SPRING_MAIL_PASSWORD=uevh uodv oxeh gcoa
+      
+      # === JWT ===
+      - JWT_SECRET_KEY=yT7N4p9q3XrFv8zWb2GkR5hL0sPjQ1tYd9VwE6mHnB3uA5rKx8TzJ2cL4nF7vQ0p
+      - JWT_EXPIRATION_MS=3600000
+      
+      # === EUREKA CONFIG ===
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - EUREKA_INSTANCE_HOSTNAME=notifications-ms
+
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+    networks:
+      - roster-net
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+  # ============================
   #        API GATEWAY
   # ============================
   api-gateway:
