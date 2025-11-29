@@ -13,7 +13,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idUser;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Integer idUniversity;
 
     @Column(nullable = true)

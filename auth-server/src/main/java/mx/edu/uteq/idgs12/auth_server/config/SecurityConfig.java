@@ -140,7 +140,6 @@ public class SecurityConfig {
         }
     }
 
-    // ✅ ESTE ERA EL QUE TE FALTABA
     @Bean
     public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
         return new NimbusJwtEncoder(jwkSource);
