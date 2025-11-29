@@ -227,7 +227,7 @@ services:
       - EUREKA_INSTANCE_HOSTNAME=storage-ms
 
     volumes:
-      - "C:/GCP_KEYS/roster-474406-464b45aeb0cd.json:/secrets/google-key.json:ro"
+      - "./storage-ms/src/keys/google-key.json:/secrets/google-key.json:ro"
 
     depends_on:
       eureka-server:
