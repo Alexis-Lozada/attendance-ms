@@ -1,4 +1,4 @@
-package mx.edu.uteq.idgs12.attendance_ms.security;
+package mx.edu.uteq.idgs12.chat_ms.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas
                         .requestMatchers("/actuator/health").permitAll()
-                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/ws-chat/**").permitAll()
 
                         // TODO lo demás requiere token OAuth
                         .anyRequest().authenticated()

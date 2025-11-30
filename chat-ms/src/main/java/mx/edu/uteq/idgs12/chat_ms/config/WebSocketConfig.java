@@ -14,7 +14,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Endpoint para que el frontend se conecte
         registry.addEndpoint("/ws-chat")
-                .setAllowedOriginPatterns("*") // o dominio en producción
+                .setAllowedOrigins(
+                        "http://localhost:3000",
+                        "https://attendance-app-gold-six.vercel.app"
+                )
                 .withSockJS(); // fallback
     }
 

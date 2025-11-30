@@ -37,7 +37,7 @@ spring:
             - id: attendance-service
               uri: lb://attendance-ms
               predicates:
-                - Path=/api/attendances/**, /api/group-courses/**, /api/schedules/**
+                - Path=/api/attendances/**, /api/group-courses/**, /api/schedules/**, /api/sessions/**
               filters:
                 - StripPrefix=0
 
