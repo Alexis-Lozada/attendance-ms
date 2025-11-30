@@ -24,7 +24,7 @@ public class SecurityConfig {
                 )
                 // Activar Resource Server (valida JWT de auth-server)
                 .oauth2ResourceServer(oauth -> oauth
-                        .jwt(jwt -> jwt.jwkSetUri("http://localhost:9000/oauth2/jwks"))
+                        .jwt(jwt -> jwt.jwkSetUri("http://34.28.53.159:9000/oauth2/jwks"))
                 );
 
         return http.build();
