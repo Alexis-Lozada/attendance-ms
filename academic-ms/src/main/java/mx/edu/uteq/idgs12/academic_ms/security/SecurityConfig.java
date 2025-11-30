@@ -17,7 +17,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas
                         .requestMatchers("/actuator/health").permitAll()
-                        .requestMatchers("/api/auth/register").permitAll()
 
                         // TODO lo demás requiere token OAuth
                         .anyRequest().authenticated()

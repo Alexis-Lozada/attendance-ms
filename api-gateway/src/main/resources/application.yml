@@ -17,7 +17,7 @@ spring:
             - id: users-service
               uri: lb://users-ms # lb indica que se obtiene desde Eureka
               predicates:
-                - Path=/api/user/**
+                - Path=/api/user/**, /api/enrollments/**
               filters:
                 - StripPrefix=0 # No elimina nada del path
 
@@ -27,7 +27,7 @@ spring:
             - id: academic-service
               uri: lb://academic-ms
               predicates:
-                - Path=/api/universities/**
+                - Path=/api/universities/**, /api/configurations/**, /api/divisions/**, /api/programs/**, /api/courses/**, /api/course-modules/**, /api/groups/**
               filters:
                 - StripPrefix=0
 
@@ -37,7 +37,7 @@ spring:
             - id: attendance-service
               uri: lb://attendance-ms
               predicates:
-                - Path=/api/attendance/**
+                - Path=/api/attendances/**, /api/group-courses/**, /api/schedules/**
               filters:
                 - StripPrefix=0
 
@@ -47,7 +47,7 @@ spring:
             - id: storage-service
               uri: lb://storage-ms
               predicates:
-                - Path=/api/storage/**
+                - Path=/api/files/**
               filters:
                 - StripPrefix=0
 
@@ -57,7 +57,7 @@ spring:
             - id: chat-service
               uri: lb://chat-ms
               predicates:
-                - Path=/api/chat/**
+                - Path=/api/chats/**
               filters:
                 - StripPrefix=0
 
