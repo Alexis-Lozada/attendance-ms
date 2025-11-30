@@ -283,6 +283,43 @@ services:
       retries: 3
       start_period: 40s
 
+    # ============================
+  #        AUTH-SERVER
+  # ============================
+  auth-server:
+    build:
+      context: ./auth-server
+      dockerfile: Dockerfile
+    container_name: auth-server
+    ports:
+      - "9000:9000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - AUTH_SERVER_PORT=9000
+
+      # === DATABASE ===
+      - USERS_DB_URL=jdbc:postgresql://ep-fragrant-brook-a4now1ye-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require
+      - USERS_DB_USER=neondb_owner
+      - USERS_DB_PASSWORD=npg_dNiD1SO3Gvqt
+
+      # === EUREKA ===
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - EUREKA_INSTANCE_PREFER_IP_ADDRESS=true
+      - EUREKA_INSTANCE_HOSTNAME=chat-ms
+
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+
+    networks:
+      - roster-net
+
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 300s
 
   # ============================
   #        API GATEWAY
