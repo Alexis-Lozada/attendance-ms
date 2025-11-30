@@ -27,7 +27,7 @@ spring:
             - id: academic-service
               uri: lb://academic-ms
               predicates:
-                - Path=/api/academic/**
+                - Path=/api/universities/**
               filters:
                 - StripPrefix=0
 
