@@ -5,7 +5,6 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
-import java.util.List;
 import java.util.UUID;
 
 import com.nimbusds.jose.jwk.JWKSet;
@@ -32,28 +31,11 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat.SELF_CONTAINED;
 
 @Configuration
 public class SecurityConfig {
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:3000"));
-        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-        cfg.setAllowedHeaders(List.of("*"));
-        cfg.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cfg);
-        return source;
-    }
 
     @Bean
     @Order(1)
@@ -65,12 +47,9 @@ public class SecurityConfig {
 
         http
             .securityMatcher(endpointsMatcher)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            // ✅ CORS quitado aquí
             .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
             .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-            .exceptionHandling(ex -> ex.authenticationEntryPoint(
-                    new LoginUrlAuthenticationEntryPoint("/login")
-            ))
             .with(authorizationServerConfigurer, (cfg) -> cfg.oidc(Customizer.withDefaults()));
 
         return http.build();
@@ -80,7 +59,7 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain appFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            // ✅ CORS quitado aquí
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**", "/error").permitAll()
