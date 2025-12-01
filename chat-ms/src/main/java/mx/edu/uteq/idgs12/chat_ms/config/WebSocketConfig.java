@@ -1,3 +1,4 @@
+// src/main/java/mx/edu/uteq/idgs12/chat_ms/config/WebSocketConfig.java
 package mx.edu.uteq.idgs12.chat_ms.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -12,17 +13,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // Endpoint para que el frontend se conecte
         registry.addEndpoint("/ws-chat")
-                .setAllowedOrigins(
-                        "*"
-                )
-                .withSockJS(); // fallback
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic"); // prefijo para los mensajes de salida
-        registry.setApplicationDestinationPrefixes("/app"); // prefijo para los mensajes entrantes
+        registry.enableSimpleBroker("/topic");
+        registry.setApplicationDestinationPrefixes("/app");
     }
 }
