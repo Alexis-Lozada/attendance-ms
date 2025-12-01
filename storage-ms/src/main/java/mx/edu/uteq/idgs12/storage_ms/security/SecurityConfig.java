@@ -1,4 +1,4 @@
-package mx.edu.uteq.idgs12.chat_ms.security;
+package mx.edu.uteq.idgs12.storage_ms.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +14,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> {}) 
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas
                         .requestMatchers("/actuator/health").permitAll()
-                        .requestMatchers("/ws-chat/**").permitAll()
 
                         // TODO lo demás requiere token OAuth
                         .anyRequest().authenticated()
