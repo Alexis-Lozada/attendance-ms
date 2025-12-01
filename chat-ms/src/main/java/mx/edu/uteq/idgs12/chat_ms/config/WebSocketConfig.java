@@ -1,4 +1,3 @@
-// src/main/java/mx/edu/uteq/idgs12/chat_ms/config/WebSocketConfig.java
 package mx.edu.uteq.idgs12.chat_ms.config;
 
 import org.springframework.context.annotation.Configuration;

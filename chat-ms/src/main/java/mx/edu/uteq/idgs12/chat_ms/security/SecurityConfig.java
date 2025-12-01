@@ -1,4 +1,3 @@
-// src/main/java/mx/edu/uteq/idgs12/chat_ms/security/SecurityConfig.java
 package mx.edu.uteq.idgs12.chat_ms.security;
 
 import org.springframework.context.annotation.Bean;
