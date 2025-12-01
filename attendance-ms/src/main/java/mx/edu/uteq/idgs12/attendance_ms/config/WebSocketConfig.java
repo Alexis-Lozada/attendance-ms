@@ -14,8 +14,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // endpoint del socket
                 .setAllowedOrigins(
-                        "http://localhost:3000",
-                        "https://attendance-app-gold-six.vercel.app"
+                        "*"
                 )
                 .withSockJS(); // fallback
     }
