@@ -131,7 +131,7 @@ public class AttendanceSessionService {
             vars.put("studentName", fullName);
             vars.put("courseName", courseName);
             vars.put("attendanceLink",
-                    "http://localhost:3000/attendance/mark?groupCourse=" + dto.getIdGroupCourse() +
+                    "https://www.roster.academy/attendance/mark?groupCourse=" + dto.getIdGroupCourse() +
                             "&schedule=" + dto.getIdSchedule());
 
             notification.setTemplateVariables(vars);

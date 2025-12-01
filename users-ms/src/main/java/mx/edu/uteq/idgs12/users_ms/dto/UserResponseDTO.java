@@ -8,7 +8,6 @@ public class UserResponseDTO {
     private Integer idUser;
     private Integer idUniversity;
     private Integer idDivision;
-    private Integer idProgram;
     private String email;
     private String enrollmentNumber;
     private String firstName;

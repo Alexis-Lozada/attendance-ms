@@ -27,6 +27,17 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /** Crear nuevo usuario */
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody UserRegisterDTO dto) {
+        try {
+            UserResponseDTO created = userService.createUser(dto);
+            return ResponseEntity.ok(created);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
     /** Actualizar información de un usuario */
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,33 @@ public class UserService {
     /** Obtener usuario por ID */
     public Optional<UserResponseDTO> getUserById(Integer id) {
         return userRepository.findById(id).map(this::mapToResponse);
+    }
+
+    /** Crear nuevo usuario */
+    public UserResponseDTO createUser(UserRegisterDTO dto) {
+
+        // Validar email duplicado
+        userRepository.findByEmail(dto.getEmail()).ifPresent(u -> {
+            throw new RuntimeException("Email ya registrado");
+        });
+
+        // Validar matrícula duplicada
+        if (dto.getEnrollmentNumber() != null) {
+            userRepository.findByEnrollmentNumber(dto.getEnrollmentNumber()).ifPresent(u -> {
+                throw new RuntimeException("Matrícula ya registrada");
+            });
+        }
+
+        User user = new User();
+        BeanUtils.copyProperties(dto, user);
+        user.setStatus(true);
+        user.setCreatedAt(LocalDateTime.now());
+
+        // Encriptar contraseña
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        User saved = userRepository.save(user);
+        return mapToResponse(saved);
     }
 
     /** Actualizar datos de usuario */
