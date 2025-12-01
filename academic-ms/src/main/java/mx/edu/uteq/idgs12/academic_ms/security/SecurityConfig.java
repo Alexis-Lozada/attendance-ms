@@ -2,6 +2,7 @@ package mx.edu.uteq.idgs12.academic_ms.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,18 +14,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas
-                        .requestMatchers("/actuator/health").permitAll()
-
-                        // TODO lo demás requiere token OAuth
-                        .anyRequest().authenticated()
-                )
-                // Activar Resource Server (valida JWT de auth-server)
-                .oauth2ResourceServer(oauth -> oauth
-                        .jwt(jwt -> jwt.jwkSetUri("http://localhost:9000/oauth2/jwks"))
-                );
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/health").permitAll()
+                .anyRequest().authenticated()
+            )
+            // ✅ Resource Server: usa spring.security.oauth2.resourceserver.jwt.jwk-set-uri
+            .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
