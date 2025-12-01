@@ -14,13 +14,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/actuator/health").permitAll()
-                .anyRequest().authenticated()
-            )
-            // ✅ Resource Server: usa spring.security.oauth2.resourceserver.jwt.jwk-set-uri
-            .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        // Rutas públicas
+                        .requestMatchers("/actuator/health").permitAll()
+
+                        // TODO lo demás requiere token OAuth
+                        .anyRequest().authenticated()
+                )
+                // Activar Resource Server
+                .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
