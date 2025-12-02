@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class UserRegisterDTO {
     private Integer idUniversity;
+    private Integer idDivision;
     private String email;
     private String enrollmentNumber;
     private String password;
